@@ -1,2 +1,6 @@
-package com.project.msblog.models.reader;public enum ReaderRole {
+package com.project.msblog.models.reader;
+
+public enum ReaderRole {
+  USER,
+  AUTHOR
 }
