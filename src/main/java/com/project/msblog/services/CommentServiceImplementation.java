@@ -68,7 +68,10 @@ public class CommentServiceImplementation implements CommentService {
 
   @Override
   public List<Comment> listAllCommentsOnThePost(UUID postId) {
+    var post = postService.findPostById(postId)
+            .orElseThrow(RuntimeException::new);
 
+    return commentRepository.findByPost(post);
   }
 
   @Override
