@@ -51,7 +51,13 @@ public class CommentServiceImplementation implements CommentService {
 
   @Override
   public Comment updateCommentContent(UUID commentId, String commentContentRequestForUpdate) {
-    
+    return commentRepository.findById(commentId)
+            .map(commentFound -> {
+              commentFound.setContent(commentContentRequestForUpdate);
+              updateCommentTimestamps(commentFound);
+
+              return commentRepository.save(commentFound);
+            }).orElseThrow(RuntimeException::new);
   }
 
   private void updateCommentTimestamps(Comment comment) {
