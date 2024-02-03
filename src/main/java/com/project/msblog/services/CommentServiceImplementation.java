@@ -76,7 +76,8 @@ public class CommentServiceImplementation implements CommentService {
 
   @Override
   public void removeCommentFromAPost(UUID commentId) {
-
+    commentRepository.findById(commentId)
+            .ifPresentOrElse(commentRepository::delete, () -> { throw new RuntimeException(); });
   }
 }
 
