@@ -2,6 +2,8 @@ package com.project.msblog.services;
 
 import com.project.msblog.dtos.CommentDTO;
 import com.project.msblog.models.comment.Comment;
+import com.project.msblog.models.post.Post;
+import com.project.msblog.models.reader.Reader;
 import com.project.msblog.repositories.CommentRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +32,19 @@ public class CommentServiceImplementation implements CommentService {
   public Comment publishCommentOnPost(UUID postId, CommentDTO commentDataRequest) {
     return readerService.findReaderByUsername(commentDataRequest.getReaderUsername())
             .map(readerFound -> postService.findPostById(postId)
-                    .map(postFound -> {
-                      Comment comment = new Comment();
-                      comment.setContent(commentDataRequest.getContent());
-                      comment.setReader(readerFound);
-                      comment.setPost(postFound);
-                      setCommentTimestamps(comment);
-
-                      return commentRepository.save(comment);
-                    }).orElseThrow(RuntimeException::new)
+                    .map(postFound -> createCommentAndSave(commentDataRequest, readerFound, postFound))
+                    .orElseThrow(RuntimeException::new)
             ).orElseThrow(RuntimeException::new);
+  }
+
+  private Comment createCommentAndSave(CommentDTO commentDataRequest, Reader reader, Post post) {
+    Comment comment = new Comment();
+    comment.setContent(commentDataRequest.getContent());
+    comment.setReader(reader);
+    comment.setPost(post);
+    setCommentTimestamps(comment);
+
+    return commentRepository.save(comment);
   }
 
   private void setCommentTimestamps(Comment comment) {
