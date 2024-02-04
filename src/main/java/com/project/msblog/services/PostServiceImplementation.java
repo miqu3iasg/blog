@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImplementation implements PostService {
@@ -86,27 +88,41 @@ public class PostServiceImplementation implements PostService {
 
   @Override
   public List<Post> listAllPosts() {
-    return null;
+    var posts = postRepository.findAll();
+
+    if(posts.isEmpty()) throw new RuntimeException();
+
+    return posts;
   }
 
   @Override
   public Post searchJustOnePost(UUID postId) {
-    return null;
+    return postRepository.findById(postId)
+            .orElseThrow(RuntimeException::new);
   }
 
   @Override
-  public Post searchPostByAuthor(Reader author) {
-    return null;
+  public List<Post> searchPostByAuthor(String authorUsername) {
+    return readerService.findReaderByUsername(authorUsername)
+            .map(authorFound -> {
+              validateAuthorRole(authorFound);
+              return postRepository.findByAuthor(authorFound);
+            }).orElseThrow(RuntimeException::new);
   }
 
   @Override
-  public Post searchPostByCategory(String category) {
-    return null;
+  public List<Post> searchPostByCategory(String category) {
+    var postsFoundedByCategory = postRepository.findByCategory(category);
+
+    if(postsFoundedByCategory.isEmpty()) throw new RuntimeException();
+
+    return postsFoundedByCategory;
   }
 
   @Override
   public void removePost(UUID postId) {
-
+    postRepository.findById(postId)
+            .ifPresentOrElse(postRepository::delete, () -> { throw new RuntimeException(); });
   }
 
   @Override

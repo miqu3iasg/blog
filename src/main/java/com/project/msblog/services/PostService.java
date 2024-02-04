@@ -12,9 +12,9 @@ public interface PostService {
   Post createPost(PostDTO postDataRequestForCreate);
   Post updatePostData(UUID postId, PostDTO postDataRequestForUpdate);
   List<Post> listAllPosts();
+  List<Post> searchPostByAuthor(String author);
+  List<Post> searchPostByCategory(String category);
   Post searchJustOnePost(UUID postId);
-  Post searchPostByAuthor(Reader author);
-  Post searchPostByCategory(String category);
   void removePost(UUID postId);
   Optional<Post> findPostById(UUID postId);
 }
