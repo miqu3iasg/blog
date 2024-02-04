@@ -61,10 +61,28 @@ public class PostServiceImplementation implements PostService {
 
   @Override
   public Post updatePostData(UUID postId, PostDTO postDataRequestForUpdate) {
-    
+    return postRepository.findById(postId)
+            .map(postFound -> setNewPostRequestDataAndSave(postFound, postDataRequestForUpdate))
+            .orElseThrow(RuntimeException::new);
   }
 
+  private Post setNewPostRequestDataAndSave(Post post, PostDTO postDataRequestForUpdate) {
+    post.setAuthor(postDataRequestForUpdate.getAuthor());
+    post.setTitle(postDataRequestForUpdate.getTitle());
+    post.setDescription(postDataRequestForUpdate.getDescription());
+    post.setCategory(postDataRequestForUpdate.getCategory());
+    post.setContent(postDataRequestForUpdate.getContent());
 
+    updatePostTimestamps(post);
+
+    return postRepository.save(post);
+  }
+
+  private void updatePostTimestamps(Post post) {
+    post.setPublicationDate(LocalDate.now());
+    post.setPublicationTime(LocalTime.now());
+    post.setUpdatedAt(LocalDateTime.now());
+  }
 
   @Override
   public List<Post> listAllPosts() {
