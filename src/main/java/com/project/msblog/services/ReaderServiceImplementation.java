@@ -5,6 +5,7 @@ import com.project.msblog.repositories.ReaderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ReaderServiceImplementation implements ReaderService {
@@ -12,6 +13,11 @@ public class ReaderServiceImplementation implements ReaderService {
 
   public ReaderServiceImplementation(ReaderRepository readerRepository) {
     this.readerRepository = readerRepository;
+  }
+
+  @Override
+  public Optional<Reader> findReaderById(UUID readerId) {
+    return readerRepository.findById(readerId);
   }
 
   @Override
