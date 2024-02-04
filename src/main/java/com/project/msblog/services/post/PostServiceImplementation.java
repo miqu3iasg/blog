@@ -1,20 +1,19 @@
-package com.project.msblog.services;
+package com.project.msblog.services.post;
 
 import com.project.msblog.dtos.PostDTO;
 import com.project.msblog.models.post.Post;
 import com.project.msblog.models.reader.Reader;
 import com.project.msblog.models.reader.ReaderRole;
 import com.project.msblog.repositories.PostRepository;
+import com.project.msblog.services.reader.ReaderService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImplementation implements PostService {

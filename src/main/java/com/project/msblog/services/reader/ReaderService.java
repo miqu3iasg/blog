@@ -1,4 +1,4 @@
-package com.project.msblog.services;
+package com.project.msblog.services.reader;
 
 import com.project.msblog.models.reader.Reader;
 

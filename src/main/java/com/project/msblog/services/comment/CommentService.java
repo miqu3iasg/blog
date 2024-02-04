@@ -1,4 +1,4 @@
-package com.project.msblog.services;
+package com.project.msblog.services.comment;
 
 import com.project.msblog.dtos.CommentDTO;
 import com.project.msblog.models.comment.Comment;

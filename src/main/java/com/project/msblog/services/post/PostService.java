@@ -1,4 +1,4 @@
-package com.project.msblog.services;
+package com.project.msblog.services.post;
 
 import com.project.msblog.dtos.PostDTO;
 import com.project.msblog.models.post.Post;

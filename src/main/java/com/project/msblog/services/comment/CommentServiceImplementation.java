@@ -1,10 +1,12 @@
-package com.project.msblog.services;
+package com.project.msblog.services.comment;
 
 import com.project.msblog.dtos.CommentDTO;
 import com.project.msblog.models.comment.Comment;
 import com.project.msblog.models.post.Post;
 import com.project.msblog.models.reader.Reader;
 import com.project.msblog.repositories.CommentRepository;
+import com.project.msblog.services.post.PostService;
+import com.project.msblog.services.reader.ReaderService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
