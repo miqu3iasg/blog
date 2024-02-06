@@ -1,6 +1,9 @@
 package com.project.msblog.services.comment;
 
 import com.project.msblog.dtos.CommentDTO;
+import com.project.msblog.exceptions.CommentNotFoundException;
+import com.project.msblog.exceptions.PostNotFoundException;
+import com.project.msblog.exceptions.ReaderNotFoundException;
 import com.project.msblog.models.comment.Comment;
 import com.project.msblog.models.post.Post;
 import com.project.msblog.models.reader.Reader;
@@ -35,8 +38,8 @@ public class CommentServiceImplementation implements CommentService {
     return readerService.findReaderByUsername(commentDataRequest.getReaderUsername())
             .map(readerFound -> postService.findPostById(postId)
                     .map(postFound -> createCommentAndSave(commentDataRequest, readerFound, postFound))
-                    .orElseThrow(RuntimeException::new)
-            ).orElseThrow(RuntimeException::new);
+                    .orElseThrow(PostNotFoundException::new)
+            ).orElseThrow(ReaderNotFoundException::new);
   }
 
   private Comment createCommentAndSave(CommentDTO commentDataRequest, Reader reader, Post post) {
@@ -64,7 +67,7 @@ public class CommentServiceImplementation implements CommentService {
               updateCommentTimestamps(commentFound);
 
               return commentRepository.save(commentFound);
-            }).orElseThrow(RuntimeException::new);
+            }).orElseThrow(CommentNotFoundException::new);
   }
 
   private void updateCommentTimestamps(Comment comment) {
@@ -76,7 +79,7 @@ public class CommentServiceImplementation implements CommentService {
   @Override
   public List<Comment> listAllCommentsOnThePost(UUID postId) {
     var post = postService.findPostById(postId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(PostNotFoundException::new);
 
     return commentRepository.findByPost(post);
   }
@@ -84,7 +87,7 @@ public class CommentServiceImplementation implements CommentService {
   @Override
   public void removeCommentFromAPost(UUID commentId) {
     commentRepository.findById(commentId)
-            .ifPresentOrElse(commentRepository::delete, () -> { throw new RuntimeException(); });
+            .ifPresentOrElse(commentRepository::delete, () -> { throw new CommentNotFoundException(); });
   }
 }
 
