@@ -1,6 +1,9 @@
 package com.project.msblog.services.post;
 
 import com.project.msblog.dtos.PostDTO;
+import com.project.msblog.exceptions.PostNotFoundException;
+import com.project.msblog.exceptions.ReaderNotFoundException;
+import com.project.msblog.exceptions.UnauthorizedAuthorException;
 import com.project.msblog.models.post.Post;
 import com.project.msblog.models.reader.Reader;
 import com.project.msblog.models.reader.ReaderRole;
@@ -30,12 +33,12 @@ public class PostServiceImplementation implements PostService {
     return readerService.findReaderById(postDataRequestForCreate.getAuthor().getId())
             .map(this::validateAuthorRole)
             .map(author -> createPostAndSave(author, postDataRequestForCreate))
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(ReaderNotFoundException::new);
   }
 
   private Reader validateAuthorRole(Reader author) {
     if(author.getRole() != ReaderRole.AUTHOR) {
-      throw new RuntimeException(); // Lançar uma "UnauthorizedException"
+      throw new UnauthorizedAuthorException();
     }
     return author;
   }
@@ -64,7 +67,7 @@ public class PostServiceImplementation implements PostService {
   public Post updatePostData(UUID postId, PostDTO postDataRequestForUpdate) {
     return postRepository.findById(postId)
             .map(postFound -> setNewPostRequestDataAndSave(postFound, postDataRequestForUpdate))
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(PostNotFoundException::new);
   }
 
   private Post setNewPostRequestDataAndSave(Post post, PostDTO postDataRequestForUpdate) {
@@ -89,7 +92,7 @@ public class PostServiceImplementation implements PostService {
   public List<Post> listAllPosts() {
     var posts = postRepository.findAll();
 
-    if(posts.isEmpty()) throw new RuntimeException();
+    if(posts.isEmpty()) throw new PostNotFoundException();
 
     return posts;
   }
@@ -97,7 +100,7 @@ public class PostServiceImplementation implements PostService {
   @Override
   public Post searchJustOnePost(UUID postId) {
     return postRepository.findById(postId)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(PostNotFoundException::new);
   }
 
   @Override
@@ -106,14 +109,14 @@ public class PostServiceImplementation implements PostService {
             .map(authorFound -> {
               validateAuthorRole(authorFound);
               return postRepository.findByAuthor(authorFound);
-            }).orElseThrow(RuntimeException::new);
+            }).orElseThrow(ReaderNotFoundException::new);
   }
 
   @Override
   public List<Post> searchPostByCategory(String category) {
     var postsFoundedByCategory = postRepository.findByCategory(category);
 
-    if(postsFoundedByCategory.isEmpty()) throw new RuntimeException();
+    if(postsFoundedByCategory.isEmpty()) throw new PostNotFoundException();
 
     return postsFoundedByCategory;
   }
@@ -121,7 +124,7 @@ public class PostServiceImplementation implements PostService {
   @Override
   public void removePost(UUID postId) {
     postRepository.findById(postId)
-            .ifPresentOrElse(postRepository::delete, () -> { throw new RuntimeException(); });
+            .ifPresentOrElse(postRepository::delete, () -> { throw new PostNotFoundException(); });
   }
 
   @Override
