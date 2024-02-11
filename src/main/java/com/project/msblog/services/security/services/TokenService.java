@@ -1,4 +1,4 @@
-package com.project.msblog.security.services;
+package com.project.msblog.services.security.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
