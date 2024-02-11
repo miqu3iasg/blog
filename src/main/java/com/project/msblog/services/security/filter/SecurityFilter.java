@@ -1,7 +1,7 @@
-package com.project.msblog.security.filter;
+package com.project.msblog.services.security.filter;
 
 import com.project.msblog.repositories.ReaderRepository;
-import com.project.msblog.security.services.TokenService;
+import com.project.msblog.services.security.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
