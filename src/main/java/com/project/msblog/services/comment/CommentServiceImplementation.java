@@ -24,10 +24,11 @@ public class CommentServiceImplementation implements CommentService {
   private final ReaderService readerService;
   private final PostService postService;
 
-  public CommentServiceImplementation(
+  public CommentServiceImplementation (
           CommentRepository commentRepository,
           ReaderService readerService,
-          PostService postService) {
+          PostService postService
+  ) {
     this.commentRepository = commentRepository;
     this.readerService = readerService;
     this.postService = postService;
@@ -37,8 +38,9 @@ public class CommentServiceImplementation implements CommentService {
   public Comment publishCommentOnPost(UUID postId, CommentDTO commentDataRequest) {
     return readerService.findReaderByUsername(commentDataRequest.getReaderUsername())
             .map(readerFound -> postService.findPostById(postId)
-                    .map(postFound -> createCommentAndSave(commentDataRequest, readerFound, postFound))
-                    .orElseThrow(PostNotFoundException::new)
+                    .map(postFound ->
+                            createCommentAndSave(commentDataRequest, readerFound, postFound)
+                    ).orElseThrow(PostNotFoundException::new)
             ).orElseThrow(ReaderNotFoundException::new);
   }
 
@@ -78,16 +80,18 @@ public class CommentServiceImplementation implements CommentService {
 
   @Override
   public List<Comment> listAllCommentsOnThePost(UUID postId) {
-    var post = postService.findPostById(postId)
+    var postExists = postService.findPostById(postId)
             .orElseThrow(PostNotFoundException::new);
 
-    return commentRepository.findByPost(post);
+    return commentRepository.findByPost(postExists);
   }
 
   @Override
   public void removeCommentFromAPost(UUID commentId) {
     commentRepository.findById(commentId)
-            .ifPresentOrElse(commentRepository::delete, () -> { throw new CommentNotFoundException(); });
+            .ifPresentOrElse(commentRepository::delete,
+                    () -> { throw new CommentNotFoundException(); }
+            );
   }
 }
 
