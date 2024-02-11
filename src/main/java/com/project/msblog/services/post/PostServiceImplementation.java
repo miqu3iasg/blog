@@ -23,7 +23,10 @@ public class PostServiceImplementation implements PostService {
   private final PostRepository postRepository;
   private final ReaderService readerService;
 
-  public PostServiceImplementation(PostRepository postRepository, ReaderService readerService) {
+  public PostServiceImplementation (
+          PostRepository postRepository,
+          ReaderService readerService
+  ) {
     this.postRepository = postRepository;
     this.readerService = readerService;
   }
@@ -109,7 +112,8 @@ public class PostServiceImplementation implements PostService {
             .map(authorFound -> {
               validateAuthorRole(authorFound);
               return postRepository.findByAuthor(authorFound);
-            }).orElseThrow(ReaderNotFoundException::new);
+            })
+            .orElseThrow(ReaderNotFoundException::new);
   }
 
   @Override
@@ -124,7 +128,8 @@ public class PostServiceImplementation implements PostService {
   @Override
   public void removePost(UUID postId) {
     postRepository.findById(postId)
-            .ifPresentOrElse(postRepository::delete, () -> { throw new PostNotFoundException(); });
+            .ifPresentOrElse(postRepository::delete,
+                    () -> { throw new PostNotFoundException(); });
   }
 
   @Override
