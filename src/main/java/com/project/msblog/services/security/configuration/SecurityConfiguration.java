@@ -1,6 +1,6 @@
-package com.project.msblog.security.configuration;
+package com.project.msblog.services.security.configuration;
 
-import com.project.msblog.security.filter.SecurityFilter;
+import com.project.msblog.services.security.filter.SecurityFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
