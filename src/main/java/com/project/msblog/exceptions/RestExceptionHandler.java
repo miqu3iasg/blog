@@ -35,4 +35,25 @@ public class RestExceptionHandler {
             .status(HttpStatus.NOT_FOUND)
             .body(readerNotFoundException.getMessage());
   }
+
+  @ExceptionHandler(EmailAlreadyExistsException.class)
+  public ResponseEntity<String> emailAlreadyExistsExceptionHandler(EmailAlreadyExistsException emailAlreadyExistsException) {
+    return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(emailAlreadyExistsException.getMessage());
+  }
+
+  @ExceptionHandler(UsernameAlreadyExistsException.class)
+  public ResponseEntity<String> usernameAlreadyExistsExceptionHandler(UsernameAlreadyExistsException usernameAlreadyExistsException) {
+    return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(usernameAlreadyExistsException.getMessage());
+  }
+
+  @ExceptionHandler(FailedLoginException.class)
+  public ResponseEntity<String> failedLoginExceptionHandler(FailedLoginException failedLoginException) {
+    return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(failedLoginException.getMessage());
+  }
 }
