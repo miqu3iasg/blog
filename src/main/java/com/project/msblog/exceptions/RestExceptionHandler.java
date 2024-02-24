@@ -50,10 +50,10 @@ public class RestExceptionHandler {
             .body(usernameAlreadyExistsException.getMessage());
   }
 
-  @ExceptionHandler(FailedLoginException.class)
-  public ResponseEntity<String> failedLoginExceptionHandler(FailedLoginException failedLoginException) {
-    return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(failedLoginException.getMessage());
-  }
+//  @ExceptionHandler(FailedLoginException.class)
+//  public ResponseEntity<String> failedLoginExceptionHandler(FailedLoginException failedLoginException) {
+//    return ResponseEntity
+//            .status(HttpStatus.BAD_REQUEST)
+//            .body(failedLoginException.getMessage());
+//  }
 }

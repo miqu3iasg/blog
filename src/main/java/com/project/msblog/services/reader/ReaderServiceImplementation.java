@@ -8,7 +8,7 @@ import com.project.msblog.models.comment.Comment;
 import com.project.msblog.models.reader.Reader;
 import com.project.msblog.repositories.CommentRepository;
 import com.project.msblog.repositories.ReaderRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,40 +30,32 @@ public class ReaderServiceImplementation implements ReaderService {
   }
 
   @Override
+  @Transactional
   public Reader registerANewReader(ReaderDTO readerDataRequestForCreate) {
-    validateEmailAndUsernameUniqueness (
-            readerDataRequestForCreate.getEmail(),
-            readerDataRequestForCreate.getUsername()
-    );
+    validateEmailAndUsernameUniqueness (readerDataRequestForCreate.getEmail(), readerDataRequestForCreate.getUsername());
 
-    var encryptedPassword = encryptPassword(readerDataRequestForCreate.getPassword());
-
-    var reader = buildReaderModel(readerDataRequestForCreate, encryptedPassword);
+    Reader reader = buildReaderModel(readerDataRequestForCreate);
 
     return readerRepository.save(reader);
   }
 
   private void validateEmailAndUsernameUniqueness(String email, String username) {
-    if (readerRepository.findByEmail(email) != null) {
+    if (readerRepository.findReaderByEmail(email).isPresent()) {
       throw new EmailAlreadyExistsException();
     }
 
-    if (readerRepository.findByUsername(username) != null) {
+    if (readerRepository.findByUsername(username).isPresent()) {
       throw new UsernameAlreadyExistsException();
     }
   }
 
-  private String encryptPassword(String password) {
-    return new BCryptPasswordEncoder().encode(password);
-  }
-
-  private Reader buildReaderModel(ReaderDTO readerDataRequestForCreate, String encryptedPassword) {
+  private Reader buildReaderModel(ReaderDTO readerDataRequestForCreate) {
     return Reader.builder()
             .username(readerDataRequestForCreate.getUsername())
             .firstName(readerDataRequestForCreate.getFirstName())
             .lastName(readerDataRequestForCreate.getLastName())
             .email(readerDataRequestForCreate.getEmail())
-            .password(encryptedPassword)
+            .password(readerDataRequestForCreate.getPassword())
             .role(readerDataRequestForCreate.getRole())
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
@@ -91,6 +83,7 @@ public class ReaderServiceImplementation implements ReaderService {
   public Optional<Reader> findReaderById(UUID readerId) {
     return Optional.ofNullable(readerRepository.findById(readerId)
             .orElseThrow(ReaderNotFoundException::new));
+
   }
 
   @Override
